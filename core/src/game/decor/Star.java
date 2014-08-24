@@ -19,10 +19,8 @@ public class Star extends Actor {
 	public void act(float delta) {
 		super.act(delta);
 
-		setRotation((float) (Math.sin(phase)));
-		phase += 0.1f;
-
-		setScale(0.2f + (float) (Math.cos(phase)));
+		setRotation(180f * (float) (Math.sin(phase)));
+		phase += 0.01f;
 	}
 
 	@Override
@@ -30,8 +28,8 @@ public class Star extends Actor {
 		super.draw(batch, parentAlpha);
 		batch.draw(starTexture, getX() - starTexture.getWidth() / 2, getY()
 				- starTexture.getHeight() / 2, starTexture.getWidth() / 2,
-				starTexture.getHeight() / 2, starTexture.getWidth(),
-				starTexture.getHeight(), 1, 1, getRotation(), 0, 0,
+				starTexture.getHeight() / 2, starTexture.getWidth() * getScaleX(),
+				starTexture.getHeight() * getScaleY(), 1, 1, getRotation(), 0, 0,
 				starTexture.getWidth(), starTexture.getHeight(), false, false);
 	}
 }

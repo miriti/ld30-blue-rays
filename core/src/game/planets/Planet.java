@@ -1,7 +1,6 @@
 package game.planets;
 
 import game.SurfaceObject;
-import game.decor.Tree;
 
 import java.util.ArrayList;
 
@@ -12,7 +11,8 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class Planet extends Group {
-	protected String name;
+	public String planetType = "planet";
+	public String name = "Unknown planet";
 
 	private ArrayList<SurfaceObject> surfaceObjects = new ArrayList<SurfaceObject>();
 	private float radius;
@@ -22,28 +22,23 @@ public class Planet extends Group {
 		return surfaceObjects;
 	}
 
-	protected void initPlanet(float radius) {
-		Image atmosphereImage = new Image(new Texture(
-				Gdx.files.internal("i/atmosphere.png")));
-		atmosphereImage.setSize((radius * 1.5f) * 2f, (radius * 1.5f) * 2f);
-		atmosphereImage.setPosition(-(radius * 1.5f), -(radius * 1.5f));
-		addActor(atmosphereImage);
+	protected void initPlanet(float radius, String texture, boolean atmosphere) {
+		if (atmosphere) {
+			Image atmosphereImage = new Image(new Texture(
+					Gdx.files.internal("i/atmosphere.png")));
+			atmosphereImage.setSize((radius * 1.5f) * 2f, (radius * 1.5f) * 2f);
+			atmosphereImage.setPosition(-(radius * 1.5f), -(radius * 1.5f));
+			addActor(atmosphereImage);
+		}
 
-		Image planetImage = new Image(new Texture(
-				Gdx.files.internal("i/planet.png")));
+		Image planetImage = new Image(new Texture(Gdx.files.internal("i/"
+				+ texture + ".png")));
 		planetImage.setSize(radius * 2, radius * 2);
 		planetImage.setPosition(-radius, -radius);
 		addActor(planetImage);
 
 		this.radius = radius;
 		this.surfaceLength = (float) (2 * Math.PI * radius);
-
-		int treeNum = (int) (2 + Math.floor(Math.random() * 6));
-
-		for (int i = 0; i < treeNum; i++) {
-			Tree tree = new Tree();
-			putObject(tree, (float) (Math.random() * surfaceLength), true);
-		}
 	}
 
 	public float getRadius() {
@@ -76,14 +71,6 @@ public class Planet extends Group {
 	public float calculateSurfacePosition(float cx, float cy) {
 		double a = Math.PI / 2 + Math.atan2(getY() - cy, getX() - cx);
 		return getSurfaceLength() * (float) (-a / (2 * Math.PI));
-	}
-
-	public Planet(float radius) {
-		initPlanet(radius);
-	}
-
-	public Planet() {
-		initPlanet(300);
 	}
 
 	/**

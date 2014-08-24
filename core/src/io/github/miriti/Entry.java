@@ -2,7 +2,6 @@ package io.github.miriti;
 
 import game.GameMain;
 import game.Input;
-import game.hud.HUD;
 import io.github.miriti.base.State;
 
 import com.badlogic.gdx.ApplicationAdapter;

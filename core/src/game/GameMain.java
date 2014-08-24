@@ -1,59 +1,104 @@
 package game;
 
+import java.util.ArrayList;
+
+import game.decor.StarSky;
 import game.decor.Sun;
 import game.hud.HUD;
+import game.planets.Cradle;
+import game.planets.Heli;
+import game.planets.Noon;
 import game.planets.Planet;
 import io.github.miriti.base.State;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class GameMain extends State {
 
 	private Player player;
-	private Planet testPlanet;
-	private Planet testPlanet2;
-	private Planet testPlanet3;
 	private HUD hud;
+	private Music music;
 
 	public GameMain() {
 		super();
+
+		music = Gdx.audio.newMusic(Gdx.files.internal("m/loop.ogg"));
+		music.setLooping(true);
+		music.setVolume(0.6f);
+		music.play();
 
 		hud = new HUD();
 
 		player = new Player();
 
-		testPlanet = new Planet(500);
-		testPlanet.setPosition(0, 20000);
-		testPlanet.putObject(player, 0);
+		ArrayList<Planet> planets = new ArrayList<Planet>();
+		ArrayList<PlanetElevator> elevators = new ArrayList<PlanetElevator>();
 
-		testPlanet2 = new Planet(500);
-		testPlanet2.setPosition(-15000, -3000);
+		// Create Cradle
+		Cradle cradle = new Cradle();
+		cradle.setPosition(6000, 0);
+		cradle.putObject(player, cradle.getSurfaceLength() * 0.5f);
+		planets.add(cradle);
 
-		testPlanet3 = new Planet(2000);
-		testPlanet3.setPosition(20000, -30000);
+		// Create Noon
+		Noon noon = new Noon();
+		noon.setPosition(6400, 2000);
+		planets.add(noon);
 
-		PlanetElevator elevator = new PlanetElevator();
-		elevator.connectPlanets(testPlanet, testPlanet2);
+		// Elevator
+		PlanetElevator noonElevator = new PlanetElevator();
+		noonElevator.connectPlanets(cradle, noon);
+		elevators.add(noonElevator);
 
-		PlanetElevator elevator2 = new PlanetElevator();
-		elevator2.connectPlanets(testPlanet2, testPlanet3);
+		// Heli
+		Heli heli = new Heli();
+		heli.setPosition(-5000, -10000);
+		planets.add(heli);
 
-		PlanetElevator elevator3 = new PlanetElevator();
-		elevator3.connectPlanets(testPlanet3, testPlanet);
+		// Cradle Heli elevator
+		PlanetElevator heliElivator = new PlanetElevator();
+		heliElivator.connectPlanets(cradle, heli);
+		heliElivator.setOperates(false, "missing battery");
+		elevators.add(heliElivator);
 
+		float minx = Float.MAX_VALUE;
+		float miny = Float.MAX_VALUE;
+		float maxx = Float.MIN_VALUE;
+		float maxy = Float.MIN_VALUE;
+
+		for (Planet p : planets) {
+			if (p.getX() < minx) {
+				minx = p.getX();
+			}
+
+			if (p.getX() > maxx) {
+				maxx = p.getX();
+			}
+
+			if (p.getY() < miny) {
+				miny = p.getY();
+			}
+
+			if (p.getY() > maxy) {
+				maxy = p.getY();
+			}
+		}
+
+		addActor(new StarSky(minx, miny, maxx, maxy));
 		addActor(new Sun());
 
-		addActor(testPlanet);
-		addActor(testPlanet2);
-		addActor(testPlanet3);
+		for (PlanetElevator e : elevators) {
+			addActor(e);
+		}
+
+		for (Planet p : planets) {
+			addActor(p);
+		}
 
 		addActor(player);
-
-		addActor(elevator);
-		addActor(elevator2);
-		addActor(elevator3);
-
 	}
 
 	@Override

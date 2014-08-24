@@ -1,12 +1,27 @@
 package game;
 
+import game.inventory.InventoryItem;
 import game.planets.Planet;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
 
-public class SurfaceObject extends Group {
+public abstract class SurfaceObject extends Group {
 	protected float surfaceX = 0;
-	protected Planet planet = null;
+	public Planet planet = null;
+	public boolean interactable = false;
+	public boolean takeable = false;
+
+	public abstract boolean interact(Player with);
+
+	/**
+	 * Use the item somehow
+	 * 
+	 * @param item
+	 * @return
+	 */
+	public boolean use(InventoryItem item) {
+		return false;
+	}
 
 	public float getSurfaceX() {
 		return surfaceX;
@@ -26,7 +41,7 @@ public class SurfaceObject extends Group {
 
 			float f = surfaceX / planet.getSurfaceLength();
 			float a = (float) (f * (2 * Math.PI));
-			
+
 			float pX = (getParent() == planet ? 0 : planet.getX())
 					+ (float) (Math.sin(a) * planet.getRadius());
 			float pY = (getParent() == planet ? 0 : planet.getY())
@@ -38,7 +53,14 @@ public class SurfaceObject extends Group {
 	}
 
 	public void setPlanet(Planet pl) {
+		setPlanet(pl, false);
+	}
+
+	public void setPlanet(Planet pl, boolean deattach) {
 		if (planet != null) {
+			if (deattach) {
+				planet.removeActor(this);
+			}
 			planet.removeObject(this);
 		}
 		planet = pl;

@@ -7,13 +7,13 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 
 public class Mob extends SurfaceObject {
-	protected PlanetElevatorEnter elevatorEnter = null;
+	public PlanetElevatorEnter elevatorEnter = null;
 
 	protected String name = "Random Mob";
 
 	private Vector2 animStart = null;
 	private Vector2 animEnd = null;
-	private float elevationTime = 5;
+	private float elevationTime = 3;
 	private float elevationTimeCurrent = 0;
 	private float initRotation;
 
@@ -27,6 +27,7 @@ public class Mob extends SurfaceObject {
 
 		if (elevatorEnter != null) {
 			if (elevationTimeCurrent >= elevationTime) {
+				HUD.getInstance().say("Welcome to the " + elevatorEnter.destination.planetType + " \"" + elevatorEnter.destination.name + "\"");
 				elevatorEnter.destination.putObject(this,
 						elevatorEnter.exit.getSurfaceX());
 				elevatorEnter = null;
@@ -56,5 +57,10 @@ public class Mob extends SurfaceObject {
 				elevationTimeCurrent += delta;
 			}
 		}
+	}
+
+	@Override
+	public boolean interact(Player with) {
+		return false;
 	}
 }

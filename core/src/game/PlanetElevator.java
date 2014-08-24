@@ -3,6 +3,7 @@ package game;
 import game.planets.Planet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -10,16 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class PlanetElevator extends Group {
 
-	private Planet planet1;
-	private Planet planet2;
 	public PlanetElevatorEnter elevatorEnter1;
 	public PlanetElevatorEnter elevatorEnter2;
+	private Group tube;
+	private boolean operates = true;
+	public String outOfOrderMessage = "";
+	private static Sound sndTurnOn;
 
 	public void connectPlanets(Planet planet1, Planet planet2) {
-
-		this.planet1 = planet1;
-		this.planet2 = planet2;
-
 		elevatorEnter1 = new PlanetElevatorEnter(planet1, planet2, this);
 		elevatorEnter2 = new PlanetElevatorEnter(planet2, planet1, this);
 
@@ -41,7 +40,7 @@ public class PlanetElevator extends Group {
 		final Vector2 v = new Vector2(
 				elevatorEnter1Pos.x - elevatorEnter2Pos.x, elevatorEnter1Pos.y
 						- elevatorEnter2Pos.y);
-		Group tube = new Group() {
+		tube = new Group() {
 			{
 				Image tubeImage = new Image(new Texture(
 						Gdx.files.internal("i/tube.png")));
@@ -55,11 +54,26 @@ public class PlanetElevator extends Group {
 		addActor(tube);
 	}
 
-	public Planet getSource() {
-		return this.planet1;
+	public boolean isOperates() {
+		return operates;
 	}
 
-	public Planet getDestination() {
-		return this.planet2;
+	public void setOperates(boolean operates) {
+		setOperates(operates, "unknown reasons");
+	}
+
+	public void setOperates(boolean operates, String message) {
+		this.operates = operates;
+		if (operates) {
+			tube.setVisible(true);
+			if (sndTurnOn == null) {
+				sndTurnOn = Gdx.audio.newSound(Gdx.files
+						.internal("s/turnon.wav"));
+			}
+			sndTurnOn.play();
+		} else {
+			tube.setVisible(false);
+			outOfOrderMessage = message;
+		}
 	}
 }

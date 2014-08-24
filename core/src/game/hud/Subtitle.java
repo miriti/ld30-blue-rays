@@ -3,7 +3,6 @@ package game.hud;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class Subtitle extends Actor {
@@ -31,8 +30,10 @@ public class Subtitle extends Actor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
-		getFont().drawMultiLine(batch, text, getX(), getY(), 1000,
-				HAlignment.CENTER);
+		getFont().setColor(0, 0, 0, 1);
+		getFont().draw(batch, text, getX() + 5, getY() + 5);
+		getFont().setColor(1, 1, 1, 1);
+		getFont().draw(batch, text, getX(), getY());
 	}
 
 	@Override
