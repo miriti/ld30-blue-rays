@@ -72,6 +72,7 @@ public class Player extends Mob {
 						.internal("s/pickup.wav"));
 			}
 			sndPickup.play();
+			item.taken();
 		} else {
 			if ((inventory[0] != null) || (inventory[1] != null)
 					|| (inventory[2] != null)) {
@@ -133,11 +134,9 @@ public class Player extends Mob {
 									&& (obj instanceof InventoryItem)) {
 								take((InventoryItem) obj);
 								interacted = true;
-								break;
 							} else {
 								if (obj.interactable) {
 									interacted = obj.interact(this);
-									break;
 								}
 							}
 						}

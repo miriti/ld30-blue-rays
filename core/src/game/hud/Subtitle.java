@@ -22,6 +22,11 @@ public class Subtitle extends Actor {
 
 	private String text;
 
+	public Subtitle(String text, float exectTime) {
+		this.text = text;
+		this.timeTotal = exectTime;
+	}
+	
 	public Subtitle(String text) {
 		this.text = text;
 		this.timeTotal = (text.length() * 150) / 1000;

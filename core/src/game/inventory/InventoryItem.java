@@ -28,4 +28,7 @@ public class InventoryItem extends SurfaceObject {
 	public boolean interact(Player with) {
 		return false;
 	}
+
+	public void taken() {
+	}
 }

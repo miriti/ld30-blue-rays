@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import io.github.miriti.Consts;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
@@ -12,6 +14,7 @@ public class HUD {
 	private Inventory inventory;
 	private static HUD instance;
 	private ArrayList<Subtitle> subtitles = new ArrayList<Subtitle>();
+	private static Sound sndSay = null;
 
 	public static HUD getInstance() {
 		return instance;
@@ -27,6 +30,24 @@ public class HUD {
 		stage.addActor(inventory);
 	}
 
+	private Subtitle addSubtitle(Subtitle subtl) {
+		subtl.setPosition(50, 400);
+		stage.addActor(subtl);
+
+		for (int i = 0; i < subtitles.size(); i++) {
+			subtitles.get(i).setY(subtitles.get(i).getY() + 75);
+		}
+		subtitles.add(subtl);
+
+		if (sndSay == null) {
+			sndSay = Gdx.audio.newSound(Gdx.files.internal("s/say.wav"));
+		}
+
+		sndSay.play();
+
+		return subtl;
+	}
+
 	/**
 	 * Add a subtitle
 	 * 
@@ -35,15 +56,12 @@ public class HUD {
 	 */
 	public Subtitle say(String str) {
 		Subtitle subtl = new Subtitle(str);
-		subtl.setPosition(50, 400);
-		stage.addActor(subtl);
+		return addSubtitle(subtl);
+	}
 
-		for (int i = 0; i < subtitles.size(); i++) {
-			subtitles.get(i).setY(subtitles.get(i).getY() + 50);
-		}
-		subtitles.add(subtl);
-
-		return subtl;
+	public Subtitle say(String str, float time) {
+		Subtitle subtl = new Subtitle(str, time);
+		return addSubtitle(subtl);
 	}
 
 	public void render() {

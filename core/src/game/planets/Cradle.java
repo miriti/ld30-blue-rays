@@ -1,6 +1,7 @@
 package game.planets;
 
 import game.decor.Tree;
+import game.inventory.Wire;
 
 public class Cradle extends Planet {
 	public Cradle() {
@@ -12,5 +13,7 @@ public class Cradle extends Planet {
 			Tree tree = new Tree();
 			putObject(tree, (float) (Math.random() * getSurfaceLength()), true);
 		}
+
+		putObject(new Wire(), -400, true);
 	}
 }

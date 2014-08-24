@@ -31,11 +31,11 @@ public abstract class SurfaceObject extends Group {
 		surfaceX = value;
 
 		if (planet != null) {
-			if (surfaceX < 0) {
+			while (surfaceX < 0) {
 				surfaceX = planet.getSurfaceLength() + surfaceX;
 			}
 
-			if (surfaceX > planet.getSurfaceLength()) {
+			while (surfaceX > planet.getSurfaceLength()) {
 				surfaceX = surfaceX - planet.getSurfaceLength();
 			}
 

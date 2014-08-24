@@ -1,15 +1,21 @@
 package game;
 
-import java.util.ArrayList;
-
 import game.decor.StarSky;
 import game.decor.Sun;
+import game.elevators.HeliElevator;
+import game.elevators.NocturneElevator;
+import game.elevators.PlanetElevator;
+import game.elevators.WeerdoElevator;
 import game.hud.HUD;
 import game.planets.Cradle;
 import game.planets.Heli;
+import game.planets.Nocturne;
 import game.planets.Noon;
 import game.planets.Planet;
+import game.planets.Weerdo;
 import io.github.miriti.base.State;
+
+import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -45,12 +51,11 @@ public class GameMain extends State {
 
 		// Create Noon
 		Noon noon = new Noon();
-		noon.setPosition(6400, 2000);
+		noon.setPosition(4500, 0);
 		planets.add(noon);
 
-		// Elevator
-		PlanetElevator noonElevator = new PlanetElevator();
-		noonElevator.connectPlanets(cradle, noon);
+		// Cradle -> Noon
+		PlanetElevator noonElevator = new PlanetElevator(cradle, noon);
 		elevators.add(noonElevator);
 
 		// Heli
@@ -58,11 +63,29 @@ public class GameMain extends State {
 		heli.setPosition(-5000, -10000);
 		planets.add(heli);
 
-		// Cradle Heli elevator
-		PlanetElevator heliElivator = new PlanetElevator();
-		heliElivator.connectPlanets(cradle, heli);
-		heliElivator.setOperates(false, "missing battery");
+		// Cradle -> Heli
+		HeliElevator heliElivator = new HeliElevator(cradle, heli);
 		elevators.add(heliElivator);
+
+		// Weerdo
+		Weerdo weerdo = new Weerdo();
+		weerdo.setPosition(-7000, -6000);
+		planets.add(weerdo);
+
+		// Nocturne
+		Nocturne nocturne = new Nocturne();
+		nocturne.setPosition(8000, -2000);
+		planets.add(nocturne);
+
+		// Heli -> Weerdo
+		NocturneElevator heliNocturneElevator = new NocturneElevator(heli,
+				nocturne);
+		elevators.add(heliNocturneElevator);
+
+		// Weerdo -> Nocturne
+		WeerdoElevator weerdoNocturneElevator = new WeerdoElevator(weerdo,
+				nocturne);
+		elevators.add(weerdoNocturneElevator);
 
 		float minx = Float.MAX_VALUE;
 		float miny = Float.MAX_VALUE;
@@ -99,22 +122,40 @@ public class GameMain extends State {
 		}
 
 		addActor(player);
+
+		hud.say("You are on your home planet \"The Cradle\"", 30);
+		hud.say("Use [A] [D] or [<-] [->] to move around", 30);
+		hud.say("Use [space] to interact with objects", 30);
+		hud.say("Hold [Z] to zoom out", 30);
+		hud.say("Explore the planetary system using space elevators", 30);
 	}
 
 	@Override
 	public void update(float delta) {
 		super.update(delta);
 
-		stage.getCamera().position.set(player.getX(), player.getY(), 0);
+		OrthographicCamera cam = (OrthographicCamera) stage.getCamera();
+
+		cam.position.set(player.getX(), player.getY(), 0);
 
 		// Rotate camera to player's angle
 		double a = -(player.getRotation() * (Math.PI / 180));
-		stage.getCamera().up.set((float) Math.sin(a), (float) Math.cos(a), 0);
+		cam.up.set((float) Math.sin(a), (float) Math.cos(a), 0);
 
 		if (Input.isKeyPressed(Keys.Z)) {
-			((OrthographicCamera) stage.getCamera()).zoom = 30;
+			if (cam.zoom < 30) {
+				cam.zoom += 0.5f;
+				if (cam.zoom > 30) {
+					cam.zoom = 30;
+				}
+			}
 		} else {
-			((OrthographicCamera) stage.getCamera()).zoom = 1;
+			if (cam.zoom > 1) {
+				cam.zoom -= 1;
+				if (cam.zoom < 1) {
+					cam.zoom = 1;
+				}
+			}
 		}
 
 		hud.act(delta);

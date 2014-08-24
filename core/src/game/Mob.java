@@ -1,5 +1,6 @@
 package game;
 
+import game.elevators.PlanetElevatorEnter;
 import game.hud.HUD;
 import game.hud.Subtitle;
 

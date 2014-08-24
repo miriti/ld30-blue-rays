@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		config.width = 1024;
 		config.height = 600;
 		config.resizable = false;
-		config.title = "%GAME_NAME_HERE%"; // TODO Game name in title
+		config.title = "Blue Rays";
 		new LwjglApplication(Entry.getInstance(), config);
 	}
 }
